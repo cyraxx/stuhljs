@@ -1,52 +1,50 @@
 #!/usr/bin/env node
 
 var bodyParser = require('body-parser'),
-    color = require('irc-colors'),
     express = require('express'),
-    fs = require('fs'),
-    irc = require('irc'),
-    optimist = require('optimist');
+    fs = require('fs');
 
-if (!fs.existsSync('config.json')) {
-    console.error('config.json not found. Create one using config.sample.json as a template.');
+var configName = process.argv.length > 2 ? process.argv[2] : 'config.json';
+
+if (!fs.existsSync(configName)) {
+    console.error('Configuration file %s not found', configName);
     process.exit(1);
 }
 
-var opts = require('./config.json');
+if (!configName.match(/^[\.\/]/)) configName = './' + configName;
 
-var args = optimist.argv;
-Object.keys(args).forEach(function(arg) {
-    if (opts.hasOwnProperty(arg)) opts[arg] = args[arg];
-});
+var opts = require(configName),
+    plugins = [],
+    channels = {};
 
-var isReady = false;
+for (var pluginOpts of opts.plugins) {
+    var pluginClass = require('./plugins/' + pluginOpts.plugin),
+        plugin = new pluginClass(pluginOpts);
 
-var client = new irc.Client(opts.server, opts.nick, {
-    userName: opts.userName,
-    realName: opts.realName,
-    autoConnect: true,
-    autoRejoin: true,
-    showErrors: true
-});
-
-client.on('registered', function() {
-    opts.nick = client.nick;
-    console.log('Connected to %s as %s', opts.server, opts.nick);
-
-    if (opts.orgaChannel) {
-        var channelWithKey = opts.orgaChannel;
-        if (opts.orgaChannelKey) channelWithKey += ' ' + opts.orgaChannelKey;
-        client.join(channelWithKey);
+    for (var channel of plugin.channels) {
+        if (channels[channel.name]) {
+            console.error('Configuration error: Duplicate channel %s', channel.name);
+            process.exit(1);
+        }
+        channels[channel.name] = channel;
     }
 
-    if (opts.publicChannel) client.join(opts.publicChannel);
-});
+    plugins.push(plugin);
+}
 
-client.on('join', function(channel, nick, message) {
-    if (nick == opts.nick) {
-        console.log('Joined %s', channel);
-        isReady = true;
+for (var destination in opts.destinations) {
+    for (var destinationChannel of opts.destinations[destination]) {
+        if (!channels[destinationChannel]) {
+            console.error('Configuration error: Destination %s references invalid channel %s', destination, destinationChannel);
+            process.exit(1);
+        }
     }
+}
+
+console.log('[sTUHL] Loaded %d destinations and %d channels', Object.keys(opts.destinations).length, Object.keys(channels).length);
+
+plugins.forEach(function(plugin) {
+    plugin.start();
 });
 
 var app = express();
@@ -83,7 +81,7 @@ app.post('/stuhl', function(req, res) {
     }
 
     var destination = req.body.destination;
-    if (destination != 'orga' && destination != 'public' && destination != 'all') {
+    if (!opts.destinations[destination]) {
         res.status(400).json({
             success: false,
             error: 'Invalid destination'
@@ -91,30 +89,18 @@ app.post('/stuhl', function(req, res) {
         return;
     }
 
-    if (!isReady) {
-        res.status(500).json({
-            success: false,
-            error: 'No IRC connection'
-        });
-        return;
+    for (var destinationChannel of opts.destinations[destination]) {
+        channels[destinationChannel].broadcast(message, req.body.title, req.body.link, req.body.level);
     }
 
-    var line = message;
-
-    var level = req.body.level;
-    if (level == 'good') line = color.green(line);
-    else if (level == 'bad') line = color.red(line);
-    else if (level == 'gay') line = color.rainbow(line);
-
-    if ((destination == 'orga' || destination == 'all') && opts.orgaChannel) client.say(opts.orgaChannel, line);
-    if ((destination == 'public' || destination == 'all') && opts.publicChannel) client.say(opts.publicChannel, line);
+    console.log('[sTUHL] Message broadcast to destination %s: %s', destination, message);
 
     res.json({
         success: true
     });
 });
 
-var server = app.listen(3000, function() {
+var server = app.listen(3000, '::', function() {
     var address = server.address();
-    console.log('Der sTUHL läuft! http://%s:%s', address.address, address.port);
+    console.log('[sTUHL] Der sTUHL läuft! http://%s:%s', address.address, address.port);
 });
