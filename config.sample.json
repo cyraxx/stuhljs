@@ -1,0 +1,64 @@
+{
+    "key": "changeme",
+    "plugins": [{
+        "plugin": "irc",
+        "server": "irc.fu-berlin.de",
+        "nick": "sTUHL",
+        "userName": "stuhljs",
+        "realName": "Der neue sTUHL - jetzt noch flüssiger!",
+        "channels": [{
+            "name": "public-irc",
+            "channel": "#yourparty"
+        }, {
+            "name": "orga-irc",
+            "channel": "#yourparty.orga",
+            "key": "your-irc-key"
+        }]
+    }, {
+        "plugin": "slack",
+        "channels": [{
+            "name": "slack",
+            "webhook": "https://hooks.slack.com/services/YOUR/KEY/HERE",
+            "icon": ":poop:"
+        }]
+    }, {
+        "plugin": "telegram",
+        "token": "yourtokenhere",
+        "channels": [{
+            "name": "telegram",
+            "channel": "@yourparty"
+        }]
+    }, {
+        "plugin": "onesignal",
+        "apiKey": "yourkey",
+        "appID": "your-id",
+        "channels": [{
+            "name": "push-all"
+        }, {
+            "name": "push-android",
+            "androidOnly": true
+        }, {
+            "name": "push-ios",
+            "iosOnly": true
+        }, {
+            "name": "push-windows",
+            "windowsOnly": true
+        }, {
+            "name": "push-competitions",
+            "segments": ["Competitions"]
+        }, {
+            "name": "push-deadlines",
+            "segments": ["Deadlines"]
+        }, {
+            "name": "push-events",
+            "segments": ["Events"]
+        }]
+    }],
+    "destinations": {
+        "general": ["public-irc", "push-all", "telegram"],
+        "competitions": ["public-irc", "push-competitions", "telegram"],
+        "deadlines": ["public-irc", "push-deadlines"],
+        "events": ["public-irc", "push-events", "telegram"],
+        "orga": ["orga-irc", "slack"]
+    }
+}
