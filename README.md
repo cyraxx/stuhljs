@@ -29,6 +29,7 @@ Notifications are sent by posting a JSON object to `/stuhl` containing the follo
 * `title`: Optional heading of the notification
 * `link`: Optional link associated with the notification
 * `level`: Optional message level (`good`, `bad`, `boring`) that controls how the notification is displayed (not supported by all plugins)
+* `ttl`: Optional integer defining the time in seconds until this notification should be considered expired (currently only supported by OneSignal plugin)
 
 The HTTP response is a JSON object that contains the boolean field `success` and an `error` string if applicable.
 

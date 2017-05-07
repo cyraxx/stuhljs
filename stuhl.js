@@ -89,8 +89,17 @@ app.post('/stuhl', function(req, res) {
         return;
     }
 
+    var ttl = req.body.ttl;
+    if (typeof ttl !== 'undefined' && !Number.isInteger(ttl)) {
+        res.status(400).json({
+            success: false,
+            error: 'Invalid TTL'
+        });
+        return;
+    }
+
     for (var destinationChannel of opts.destinations[destination]) {
-        channels[destinationChannel].broadcast(message, req.body.title, req.body.link, req.body.level);
+        channels[destinationChannel].broadcast(message, req.body.title, req.body.link, req.body.level, req.body.ttl);
     }
 
     console.log('[sTUHL] Message broadcast to destination %s: %s', destination, message);

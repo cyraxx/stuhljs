@@ -21,7 +21,7 @@ var oneSignalChannel = function(parent, opts) {
     this.name = opts.name;
 };
 
-oneSignalChannel.prototype.broadcast = function(message, title, link, level) {
+oneSignalChannel.prototype.broadcast = function(message, title, link, level, ttl) {
     var params = {
         app_id: this.parent.opts.appID,
         contents: {
@@ -32,6 +32,8 @@ oneSignalChannel.prototype.broadcast = function(message, title, link, level) {
     if (title) params.headings = {
         en: title
     };
+
+    if (typeof ttl !== 'undefined') params.ttl = ttl;
 
     if (this.opts.segments) params.included_segments = this.opts.segments;
     else params.included_segments = ['All'];
