@@ -1,8 +1,36 @@
-var irc = require('irc'),
+const
+    irc = require('irc'),
     color = require('irc-colors');
 
-var ircClient = function(opts) {
-    var self = this;
+const ircChannel = function(parent, opts) {
+    this.parent = parent;
+    this.opts = opts;
+    this.name = opts.name;
+};
+
+ircChannel.prototype.join = function() {
+    let channelWithKey = this.opts.channel;
+    if (this.opts.key) channelWithKey += ' ' + this.opts.key;
+    this.parent.client.join(channelWithKey);
+};
+
+ircChannel.prototype.broadcast = function(message, title, link, level) {
+    let ircLine = title ? color.bold(title + ':') + ' ' + message : message;
+
+    if (level === 'good') {
+        ircLine = color.green(ircLine);
+    } else if (level === 'bad') {
+        ircLine = color.red(ircLine);
+    } else if (level === 'gay') {
+        ircLine = color.rainbow(ircLine);
+    }
+
+    if (link) ircLine += ' [' + link + ']';
+
+    this.parent.client.say(this.opts.channel, ircLine);
+};
+
+const ircClient = function(opts) {
     this.opts = opts;
 
     this.client = new irc.Client(opts.server, opts.nick, {
@@ -13,17 +41,10 @@ var ircClient = function(opts) {
         showErrors: true
     });
 
-    this.client.on('registered', function() {
-        self.onRegister();
-    });
+    this.client.on('registered', () => this.onRegister());
+    this.client.on('join', (channel, nick) => this.onJoin(channel, nick));
 
-    this.client.on('join', function(channel, nick) {
-        self.onJoin(channel, nick);
-    });
-
-    this.channels = opts.channels.map(function(c) {
-        return new ircChannel(self, c);
-    });
+    this.channels = opts.channels.map(c => new ircChannel(this, c));
 };
 
 ircClient.prototype.start = function() {
@@ -35,41 +56,11 @@ ircClient.prototype.onRegister = function() {
     this.opts.nick = this.client.nick;
     console.log('[IRC] Connected to %s as %s', this.opts.server, this.opts.nick);
 
-    for (var channel of this.channels) {
-        channel.join();
-    }
+    this.channels.forEach(channel => channel.join());
 };
 
 ircClient.prototype.onJoin = function(channel, nick) {
-    if (nick == this.opts.nick) console.log('[IRC] Joined %s', channel);
-};
-
-var ircChannel = function(parent, opts) {
-    this.parent = parent;
-    this.opts = opts;
-    this.name = opts.name;
-};
-
-ircChannel.prototype.join = function() {
-    var channelWithKey = this.opts.channel;
-    if (this.opts.key) channelWithKey += ' ' + this.opts.key;
-    this.parent.client.join(channelWithKey);
-};
-
-ircChannel.prototype.broadcast = function(message, title, link, level) {
-    var ircLine = title ? color.bold(title + ':') + ' ' + message : message;
-
-    if (level == 'good') {
-        ircLine = color.green(ircLine);
-    } else if (level == 'bad') {
-        ircLine = color.red(ircLine);
-    } else if (level == 'gay') {
-        ircLine = color.rainbow(ircLine);
-    }
-
-    if (link) ircLine += ' [' + link + ']';
-
-    this.parent.client.say(this.opts.channel, ircLine);
+    if (nick === this.opts.nick) console.log('[IRC] Joined %s', channel);
 };
 
 module.exports = ircClient;

@@ -1,19 +1,6 @@
-var slack = require('slack-node');
+const slack = require('slack-node');
 
-var slackClient = function(opts) {
-    var self = this;
-    this.opts = opts;
-
-    this.channels = opts.channels.map(function(c) {
-        return new slackChannel(self, c);
-    });
-};
-
-slackClient.prototype.start = function() {
-    console.log('[Slack] Slack plugin initialized');
-};
-
-var slackChannel = function(parent, opts) {
+const slackChannel = function(parent, opts) {
     this.parent = parent;
     this.opts = opts;
     this.name = opts.name;
@@ -23,14 +10,14 @@ var slackChannel = function(parent, opts) {
 };
 
 slackChannel.prototype.broadcast = function(message, title, link, level) {
-    var line = message,
+    let line = message,
         color = '#000000';
 
-    if (level == 'good') {
+    if (level === 'good') {
         color = 'good';
-    } else if (level == 'bad') {
+    } else if (level === 'bad') {
         color = 'danger';
-    } else if (level == 'gay') {
+    } else if (level === 'gay') {
         color = '#ff00ff';
         line = ':rainbow: ' + message + ' :rainbow:';
     }
@@ -45,7 +32,16 @@ slackChannel.prototype.broadcast = function(message, title, link, level) {
             text: line,
             color: color
         }]
-    }, function() {});
+    }, () => {});
+};
+
+const slackClient = function(opts) {
+    this.opts = opts;
+    this.channels = opts.channels.map(c => new slackChannel(this, c));
+};
+
+slackClient.prototype.start = function() {
+    console.log('[Slack] Slack plugin initialized');
 };
 
 module.exports = slackClient;

@@ -1,37 +1,24 @@
-var onesignal = require('node-opensignal-api');
+const onesignal = require('node-opensignal-api');
 
-var oneSignalPlugin = function(opts) {
-    var self = this;
-    this.opts = opts;
-
-    this.client = onesignal.createClient();
-
-    this.channels = opts.channels.map(function(c) {
-        return new oneSignalChannel(self, c);
-    });
-};
-
-oneSignalPlugin.prototype.start = function() {
-    console.log('[OneSignal] OneSignal plugin initialized');
-};
-
-var oneSignalChannel = function(parent, opts) {
+const oneSignalChannel = function(parent, opts) {
     this.parent = parent;
     this.opts = opts;
     this.name = opts.name;
 };
 
 oneSignalChannel.prototype.broadcast = function(message, title, link, level, ttl) {
-    var params = {
+    const params = {
         app_id: this.parent.opts.appID,
         contents: {
             en: message
         }
     };
 
-    if (title) params.headings = {
-        en: title
-    };
+    if (title) {
+        params.headings = {
+            en: title
+        };
+    }
 
     if (typeof ttl !== 'undefined') params.ttl = ttl;
 
@@ -65,9 +52,21 @@ oneSignalChannel.prototype.broadcast = function(message, title, link, level, ttl
         params.isAnyWeb = true;
     }
 
-    this.parent.client.notifications.create(this.parent.opts.apiKey, params, function(err) {
+    this.parent.client.notifications.create(this.parent.opts.apiKey, params, err => {
         if (err) console.error('[OneSignal] ' + err);
     });
+};
+
+const oneSignalPlugin = function(opts) {
+    this.opts = opts;
+
+    this.client = onesignal.createClient();
+
+    this.channels = opts.channels.map(c => new oneSignalChannel(this, c));
+};
+
+oneSignalPlugin.prototype.start = function() {
+    console.log('[OneSignal] OneSignal plugin initialized');
 };
 
 module.exports = oneSignalPlugin;
