@@ -46,4 +46,4 @@ Each plugin is a file in the `plugins` directory that exports a class supporting
 
 Every channel object needs to have:
 * `name` property: The channel name, as set in the configuration file
-* `broadcast(message, title, link, level)` method: Broadcasts a message to this channel
+* `broadcast(message, title, link, level, ttl)` method: Broadcasts a message to this channel
