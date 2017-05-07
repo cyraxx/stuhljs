@@ -42,18 +42,27 @@ oneSignalChannel.prototype.broadcast = function(message, title, link, level, ttl
         params.isIos = true;
         params.isAndroid = false;
         params.isWP = false;
+        params.isAnyWeb = false;
     } else if (this.opts.androidOnly) {
         params.isAndroid = true;
         params.isIos = false;
         params.isWP = false;
+        params.isAnyWeb = false;
     } else if (this.opts.windowsOnly) {
         params.isWP = true;
         params.iAndroid = false;
         params.isIos = false;
+        params.isAnyWeb = false;
+    } else if (this.opts.webOnly) {
+        params.isAnyWeb = true;
+        params.isIos = false;
+        params.isAndroid = false;
+        params.isWP = false;
     } else {
         params.isAndroid = true;
         params.isIos = true;
         params.isWP = true;
+        params.isAnyWeb = true;
     }
 
     this.parent.client.notifications.create(this.parent.opts.apiKey, params, function(err) {
