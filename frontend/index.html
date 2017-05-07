@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>sTUHL</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container">
+      <h1>
+        <i class="glyphicon glyphicon-bullhorn"></i>
+        Publish a notification
+      </h1>
+      <div class="alert alert-info" role="alert" id="alertLoading">
+        <i class="glyphicon glyphicon-hourglass"></i>
+        Loading, please wait
+      </div>
+      <div class="alert alert-danger alert-dismissable hidden" role="alert" id="alertErrorTemplate">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <i class="glyphicon glyphicon-alert"></i>
+        <span class="error-text"></span>
+      </div>
+      <form id="form">
+        <div class="form-group">
+          <label for="inputKey"><i class="glyphicon glyphicon-lock"></i> Publish key</label>
+          <input type="password" name="key" id="inputKey" class="form-control" placeholder="Key as defined in bot configuration" required />
+        </div>
+        <div class="form-group">
+          <label for="inputTitle"><i class="glyphicon glyphicon-header"></i> Title (optional)</label>
+          <input type="text" name="title" id="inputTitle" class="form-control" placeholder="Optional headline of your notification" />
+        </div>
+        <div class="form-group">
+          <label for="inputLink"><i class="glyphicon glyphicon-link"></i> Link (optional)</label>
+          <input type="text" name="link" id="inputLink" class="form-control" placeholder="https://link/" />
+        </div>
+        <div class="form-group">
+          <label for="inputMessage"><i class="glyphicon glyphicon-comment"></i> Message</label>
+          <input type="text" name="message" id="inputMessage" class="form-control" placeholder="Text of your notification" required />
+        </div>
+        <div class="form-group">
+          <label for="selectLevel"><i class="glyphicon glyphicon-tint"></i> Message level</label>
+          <select name="level" id="selectLevel" class="form-control">
+            <option value="boring">Neutral</option>
+            <option value="good">Good</option>
+            <option value="bad">Bad</option>
+            <option value="gay">Rainbow</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="selectDestination"><i class="glyphicon glyphicon-random"></i> Destination</label>
+          <select name="destination" id="selectDestination" class="form-control" required>
+            <option value="" disabled selected>Loading, please wait</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="inputTtl"><i class="glyphicon glyphicon-time"></i> Message TTL</label>
+          <div class="input-group">
+            <input type="number" name="ttl" id="inputTtl" class="form-control" value="3" placeholder="Duration your message is valid for" />
+            <span class="input-group-addon">
+              <select id="selectTtlMultiplier">
+                <option value="1">seconds</option>
+                <option value="60">minutes</option>
+                <option value="3600" selected>hours</option>
+                <option value="86400">days</option>
+              </select>
+            </span>
+          </div>
+        </div>
+        <button type="submit" id="buttonSubmit" class="btn btn-primary" disabled>
+          <i class="glyphicon glyphicon-send"></i>
+          Send
+        </button>
+        <span id="alertSuccess" class="label label-success hidden">Notification sent!</span>
+      </form>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>

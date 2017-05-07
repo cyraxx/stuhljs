@@ -50,9 +50,17 @@ plugins.forEach(function(plugin) {
 var app = express();
 app.use(bodyParser.json());
 
-app.get('/', function(req, res) {
-    res.send('Das ist ja sTUHL!');
-});
+if (opts.frontendEnabled) {
+    app.use(express.static('frontend'));
+
+    app.get('/destinations', function(req, res) {
+        res.json(Object.keys(opts.destinations));
+    });
+} else {
+    app.get('/', function(req, res) {
+        res.send('Das ist ja sTUHL!');
+    });
+}
 
 app.get('/stuhl', function(req, res) {
     res.status(405).json({

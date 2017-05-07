@@ -20,6 +20,10 @@ Destinations are logical groupings of channels. The idea here is to create one d
 
 See the sample file `config.sample.json` for examples.
 
+## Web frontend
+
+If the configuration option `enableFrontend` is set to `true`, accessing the service from a (reasonably modern) web browser will show a simple frontend allowing you to send notifications.
+
 ## HTTP API
 
 Notifications are sent by posting a JSON object to `/stuhl` containing the following properties:
