@@ -35,13 +35,14 @@ $(function() {
                     if (hideSuccessAlertTimeout) clearTimeout(hideSuccessAlertTimeout);
                     hideSuccessAlertTimeout = setTimeout(function() {
                         $('#alertSuccess').fadeOut('fast');
+                        $('#buttonSubmit').prop('disabled', false);
                     }, 5000);
                 } else {
                     var text = 'Error sending notification';
                     if (data && data.error) text += ': ' + data.error;
                     showError(text);
+                    $('#buttonSubmit').prop('disabled', false);
                 }
-                $('#buttonSubmit').prop('disabled', false);
             },
             contentType: 'application/json',
             data: JSON.stringify(formData),
