@@ -30,6 +30,13 @@
             "channel": "@yourparty"
         }]
     }, {
+        "plugin": "discord",
+        "token": "yourtokenhere",
+        "channels": [{
+            "name": "discord-announcements",
+            "channelID": "1234567890"
+        }]
+    }, {
         "plugin": "onesignal",
         "apiKey": "yourkey",
         "appID": "your-id",
@@ -56,10 +63,10 @@
         }]
     }],
     "destinations": {
-        "general": ["public-irc", "push-all", "telegram"],
-        "competitions": ["public-irc", "push-competitions", "telegram"],
+        "general": ["public-irc", "push-all", "telegram", "discord-announcements"],
+        "competitions": ["public-irc", "push-competitions", "telegram", "discord-announcements"],
         "deadlines": ["public-irc", "push-deadlines"],
-        "events": ["public-irc", "push-events", "telegram"],
+        "events": ["public-irc", "push-events", "telegram", "discord-announcements"],
         "orga": ["orga-irc", "slack"]
     }
 }

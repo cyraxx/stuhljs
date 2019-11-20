@@ -1,6 +1,6 @@
 # stuhl.js (Partymeister notification bot)
 
-This bot provides the ability for [Partymeister](http://www.partymeister.org/) to broadcast certain events to several destinations, including public and/or internal IRC channels, Telegram channels, Slack, and push notifications to mobile apps via OneSignal. It exposes an HTTP endpoint that is called by Partymeister for every broadcast.
+This bot provides the ability for [Partymeister](http://www.partymeister.org/) to broadcast certain events to several destinations, including public and/or internal IRC channels, Telegram channels, Slack, Discord, and push notifications to mobile apps via OneSignal. It exposes an HTTP endpoint that is called by Partymeister for every broadcast.
 
 ## Instructions
 
