@@ -16,8 +16,8 @@ const telegramChannel = function(parent, opts) {
 telegramChannel.prototype.broadcast = function(message, title, link) {
     let telegramMessage = escapeHTML(message);
 
-    if (title) telegramMessage = '<b>' + escapeHTML(title) + '</b>\n' + telegramMessage;
-    if (link) telegramMessage += '\n<a href="' + escapeHTML(link) + '">' + escapeHTML(link) + '</a>';
+    if (title) telegramMessage = `<b>${escapeHTML(title)}</b>\n\n${telegramMessage}`;
+    if (link) telegramMessage += `\n\n▶ <a href="${escapeHTML(link)}">${escapeHTML(link)}</a>`;
 
     this.parent.client.sendMessage(this.opts.channel, telegramMessage, {
         parse_mode: 'HTML'
