@@ -22,7 +22,7 @@ See the sample file `config.sample.json` for examples.
 
 ## Web frontend
 
-If the configuration option `enableFrontend` is set to `true`, accessing the service from a (reasonably modern) web browser will show a simple frontend allowing you to send notifications.
+If the configuration option `frontendEnabled` is set to `true`, accessing the service from a (reasonably modern) web browser will show a simple frontend allowing you to send notifications.
 
 ## HTTP API
 

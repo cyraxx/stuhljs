@@ -1,6 +1,6 @@
 {
     "key": "changeme",
-    "enableFrontend": true,
+    "frontendEnabled": true,
     "plugins": [{
         "plugin": "irc",
         "server": "irc.fu-berlin.de",
