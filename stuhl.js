@@ -3,7 +3,8 @@
 const
     bodyParser = require('body-parser'),
     express = require('express'),
-    fs = require('fs');
+    fs = require('fs'),
+    https = require('https');
 
 let configName = process.argv.length > 2 ? process.argv[2] : 'config.json';
 
@@ -111,7 +112,12 @@ app.post('/stuhl', (req, res) => {
     });
 });
 
-const server = app.listen(3000, '::', () => {
+const listener = opts.tls ? https.createServer({
+    key: fs.readFileSync(opts.tls.key),
+    cert: fs.readFileSync(opts.tls.cert)
+}, app) : app;
+
+const server = listener.listen(3000, '::', () => {
     const address = server.address();
-    console.log('[sTUHL] Der sTUHL läuft! http://%s:%s', address.address, address.port);
+    console.log('[sTUHL] Der sTUHL läuft! %s://%s:%s', opts.tls ? 'https' : 'http', address.address, address.port);
 });
