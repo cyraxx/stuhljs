@@ -34,11 +34,15 @@ const ircClient = function(opts) {
     this.opts = opts;
 
     this.client = new irc.Client(opts.server, opts.nick, {
+        port: opts.port || 6667,
         userName: opts.userName,
         realName: opts.realName,
         autoConnect: false,
         autoRejoin: true,
-        showErrors: true
+        showErrors: true,
+        secure: !!opts.secure,
+        selfSigned: !!opts.acceptAllCerts,
+        certExpired: !!opts.acceptAllCerts
     });
 
     this.client.on('registered', () => this.onRegister());
