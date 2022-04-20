@@ -18,7 +18,11 @@ discordChannel.prototype.broadcast = function(message, title, link) {
     if (title) msg = `**${markdownEscape(title)}**\n\n${msg}`;
     if (link) msg += `\n\n:arrow_forward: ${link}`;
 
-    chan.send(msg);
+    try {
+        chan.send(msg);
+    } catch(e) {
+        console.log(`Discord] Error: ${e}`);
+    }
 };
 
 const discordClient = function(opts) {
