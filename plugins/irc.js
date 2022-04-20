@@ -42,7 +42,8 @@ const ircClient = function(opts) {
         showErrors: true,
         secure: !!opts.secure,
         selfSigned: !!opts.acceptAllCerts,
-        certExpired: !!opts.acceptAllCerts
+        certExpired: !!opts.acceptAllCerts,
+        millisecondsOfSilenceBeforePingSent: 120000
     });
 
     this.client.on('registered', () => this.onRegister());
