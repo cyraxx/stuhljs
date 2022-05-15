@@ -1,4 +1,4 @@
-const telegram = require('node-telegram-bot-api');
+const { Client } = require('@telegraf/client');
 
 const escapeHTML = function(s) {
     return s
@@ -19,7 +19,9 @@ telegramChannel.prototype.broadcast = function(message, title, link) {
     if (title) telegramMessage = `<b>${escapeHTML(title)}</b>\n\n${telegramMessage}`;
     if (link) telegramMessage += `\n\n▶ <a href="${escapeHTML(link)}">${escapeHTML(link)}</a>`;
 
-    this.parent.client.sendMessage(this.opts.channel, telegramMessage, {
+    this.parent.client.call('sendMessage', {
+        chat_id: this.opts.channel,
+        text: telegramMessage,
         parse_mode: 'HTML'
     });
 };
@@ -27,7 +29,7 @@ telegramChannel.prototype.broadcast = function(message, title, link) {
 const telegramClient = function(opts) {
     this.opts = opts;
 
-    this.client = new telegram(opts.token);
+    this.client = new Client(opts.token);
 
     this.channels = opts.channels.map(c => new telegramChannel(this, c));
 };
