@@ -1,5 +1,5 @@
 const
-    irc = require('irc'),
+    irc = require('irc-upd'),
     color = require('irc-colors');
 
 const ircChannel = function(parent, opts) {
