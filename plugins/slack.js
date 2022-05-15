@@ -1,12 +1,11 @@
-const slack = require('slack-node');
+const { IncomingWebhook } = require('@slack/webhook');
 
 const slackChannel = function(parent, opts) {
     this.parent = parent;
     this.opts = opts;
     this.name = opts.name;
 
-    this.client = new slack();
-    this.client.setWebhook(opts.webhook);
+    this.client = new IncomingWebhook(opts.webhook);
 };
 
 slackChannel.prototype.broadcast = function(message, title, link, level) {
@@ -22,7 +21,7 @@ slackChannel.prototype.broadcast = function(message, title, link, level) {
         line = ':rainbow: ' + message + ' :rainbow:';
     }
 
-    this.client.webhook({
+    this.client.send({
         username: this.opts.nick,
         icon_emoji: this.opts.icon,
         attachments: [{
