@@ -20,7 +20,7 @@ discordChannel.prototype.broadcast = function(message, title, link) {
 
     try {
         chan.send(msg);
-    } catch(e) {
+    } catch (e) {
         console.log(`Discord] Error: ${e}`);
     }
 };
