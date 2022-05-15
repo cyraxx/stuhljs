@@ -8,7 +8,7 @@ const discordChannel = function(parent, opts) {
 };
 
 discordChannel.prototype.broadcast = function(message, title, link) {
-    const chan = this.parent.client.channels.get(this.opts.channelID);
+    const chan = this.parent.client.channels.cache.get(this.opts.channelID);
     if (!chan) {
         console.log(`[Discord] Error: Channel ${this.opts.channelID} not found`);
         return;
@@ -28,7 +28,7 @@ discordChannel.prototype.broadcast = function(message, title, link) {
 const discordClient = function(opts) {
     this.opts = opts;
 
-    this.client = new Discord.Client();
+    this.client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS] });
     this.client.on('ready', () => console.log(`[Discord] Discord client logged in as ${this.client.user.tag}`));
     this.client.on('reconnecting', () => console.log('[Discord] Discord client reconnecting'));
     this.client.on('error', err => console.log(`[Discord] ${err}`));
