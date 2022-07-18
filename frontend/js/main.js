@@ -1,7 +1,7 @@
 $(function() {
     function showError(text) {
         $('#alertErrorTemplate').clone()
-            .attr('id', '')
+            .removeAttr('id')
             .removeClass('hidden')
             .find('.error-text').text(text).end()
             .insertAfter('#alertErrorTemplate');
