@@ -1,11 +1,5 @@
 const { Client } = require('@telegraf/client');
-
-const escapeHTML = function(s) {
-    return s
-        .replace('&', '&amp;')
-        .replace('<', '&lt;')
-        .replace('>', '&gt;');
-};
+const { escape } = require('html-escaper');
 
 const telegramChannel = function(parent, opts) {
     this.parent = parent;
@@ -14,10 +8,10 @@ const telegramChannel = function(parent, opts) {
 };
 
 telegramChannel.prototype.broadcast = function(message, title, link) {
-    let telegramMessage = escapeHTML(message);
+    let telegramMessage = escape(message);
 
-    if (title) telegramMessage = `<b>${escapeHTML(title)}</b>\n\n${telegramMessage}`;
-    if (link) telegramMessage += `\n\n▶ <a href="${escapeHTML(link)}">${escapeHTML(link)}</a>`;
+    if (title) telegramMessage = `<b>${escape(title)}</b>\n\n${telegramMessage}`;
+    if (link) telegramMessage += `\n\n▶ <a href="${escape(link)}">${escape(link)}</a>`;
 
     this.parent.client.call('sendMessage', {
         chat_id: this.opts.channel,
