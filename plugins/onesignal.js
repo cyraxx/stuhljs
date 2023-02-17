@@ -1,4 +1,4 @@
-const onesignal = require('node-opensignal-api');
+const OneSignal = require('onesignal-node');
 
 const oneSignalChannel = function(parent, opts) {
     this.parent = parent;
@@ -8,7 +8,6 @@ const oneSignalChannel = function(parent, opts) {
 
 oneSignalChannel.prototype.broadcast = function(message, title, link, level, ttl) {
     const params = {
-        app_id: this.parent.opts.appID,
         contents: {
             en: message
         }
@@ -52,15 +51,14 @@ oneSignalChannel.prototype.broadcast = function(message, title, link, level, ttl
         params.isAnyWeb = true;
     }
 
-    this.parent.client.notifications.create(this.parent.opts.apiKey, params, err => {
-        if (err) console.error('[OneSignal] ' + err);
-    });
+    this.parent.client.createNotification(params)
+        .catch(err => console.error('[OneSignal] ' + err));
 };
 
 const oneSignalPlugin = function(opts) {
     this.opts = opts;
 
-    this.client = onesignal.createClient();
+    this.client = new OneSignal.Client(this.opts.appID, this.opts.apiKey);
 
     this.channels = opts.channels.map(c => new oneSignalChannel(this, c));
 };
